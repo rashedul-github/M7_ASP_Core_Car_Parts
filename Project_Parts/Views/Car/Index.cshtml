@@ -1,0 +1,80 @@
+﻿@model IEnumerable<Car>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+
+<table class="table table-light">
+    <thead class="bg-success">
+        <tr class="text-center">
+            <th>
+                
+            </th>
+            <th>Car Model</th>
+            <th>Car Type</th>
+            <th>Price</th>
+            <th>Car Is Available?</th>
+            <th>
+                <a asp-action="Create" asp-controller="Car" class="btn btn-primary btn-sm rounded-circle"><span class="fa fa-plus"></span></a>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr class="text-center">
+                <td>
+                    <button type="button" class="btn btn-sm car" data-car-pk="@c.CarId"><span class="fa fa-plus"></span></button>
+                </td>
+                <td>@c.CarModel</td>
+                <td>@c.Type</td>
+                <td>@c.Price.ToString("0.00")</td>
+                <td>@(c.IsAvailable ? "Yes" : "No")</td>
+                <td>
+                    <a asp-action="Edit" asp-controller="Car" asp-route-id="@c.CarId" class="btn btn-outline-success btn-sm rounded-circle"><span class="fa fa-pencil"></span></a>
+                    <a asp-action="Delete" asp-controller="Car" asp-route-id="@c.CarId" class="btn btn-outline-warning btn-sm rounded-circle"><span class="fa fa-trash"></span></a>
+                </td>
+            </tr>
+            <tr style="display: none" id="car-@c.CarId" class="child-row">
+                <td></td>
+                <td colspan="4">
+                    <table class="table table-primary">
+                        <thead>
+                            <tr>
+                                <th>Parts Name</th>
+                                <th>Stock</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(var p in c.CarParts)
+                            {
+                            <tr>
+                                <td>@p.PartsName</td>
+                                <td>@p.Stock</td>
+                                <td>@p.Price.ToString("0.00")</td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+                }
+        </tbody>
+</table>
+
+@section scripts{ 
+    <environment include="Development">
+        <script>
+            $(document).ready(function () {
+                $("button.car").click(function () {
+                    var id = $(this).data("car-pk");
+                    $("#car-" + id).toggle();
+                    $(this).find("span").toggleClass("fa-plus fa-minus");
+                });
+            });
+        </script>
+    </environment>
+}

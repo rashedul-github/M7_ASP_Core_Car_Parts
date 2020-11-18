@@ -1,0 +1,174 @@
+﻿@model CarParts
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Add Parts</h1>
+
+@using (Html.BeginForm("CreatePost", "Parts", FormMethod.Post, new { id = "feq", onesubmit = "javascript:return false;" }))
+{   
+    <div class="row">
+        <div class="col-12">
+            <div role="alert" id="alert" class="alert alert-suceess" style="display:none">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="alert-heading" id="msg-heading">Result</h4>
+                <p id="msg"></p>
+
+            </div>
+        </div>
+    </div>
+    <table class="table table-bordered">
+        <thead class="bg-success">
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Stoke</th>
+                <th>Price</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="tbl"></tbody>
+    </table>
+
+    <div asp-validation-summary="ModelOnly"></div>
+    <input type="hidden" asp-for="CarId" value="@ViewBag.CarId" />
+    <div class="form-group row">
+        <table  class="table">
+            <tr>
+                <td>
+                   
+                        <textarea asp-for="PartsName" class="form-control form-control-sm" placeholder="Parts Name"></textarea>
+                        <span asp-validation-for="PartsName" class="text-danger"></span>
+                  
+                </td>
+                <td>
+               
+                        <textarea asp-for="Stock" class="form-control form-control-sm" placeholder="Stock" ></textarea>
+                        <span asp-validation-for="Stock" class="text-danger"></span>
+                
+                </td>
+                <td>
+              
+                        <textarea asp-for="Price" class="form-control form-control-sm" placeholder="Price" ></textarea>
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                 
+                </td>
+                <td>
+                   
+                        <button type="button" class="btn btn-outline-info rounded-circle btn-sm mt-2" id="add"><span class="fa fa-plus"></span></button>
+                 
+                </td>
+            </tr>
+        </table>
+    </div>
+   
+    <div class="form-group row">
+        <div class="col-2 offset-5">
+            <input type="button" id="save" value="Create" class="btn btn-sm btn-primary" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-2 offset-5">
+            <a asp-action="Index" asp-controller="Car">Back to List</a>
+        </div>
+    </div>
+}
+
+@section scripts{
+    <environment include="Development">
+        <script src="~/libs/validation/jquery.validate.js"></script>
+        <script src="~/libs/validation/jquery.validate.unobtrusive.js"></script>
+        <script>
+            var data = { CarParts: [] }
+            $(document).ready(function () {
+                for (var i = 0; i < data.CarParts.length; i++) {
+                    $("#tbl").append(`<tr>
+                                            <td>${i + 1}</td>
+                                            <td >${data.CarParts[i].PartsName}</td >
+                                            <td >${data.CarParts[i].Stock}</td >
+                                            <td >${data.CarParts[i].Price}</td >
+                                            <td><button data-act='del'  data-index='${i}' type="button"  class='btn btn-primary btn-sm del'>&times;</button></td>
+                                    </tr>`);
+                }
+                $("button[data-act='del']").addClass('btn btn-info btn-sm del');
+                $("#add").click(function () {
+                    data.CarParts.push({ CarId: $("#CarId").val(), PartsName: $("#PartsName").val(), Stock: $("#Stock").val(), Price: $("#Price").val() })
+                    $("#tbl").append(`<tr>
+                                            <td>${data.CarParts.length}</td>
+                                            <td >${$("#PartsName").val()}</td>
+                                            <td >${$("#Stock").val()}</td>
+                                            <td >${$("#Price").val()}</td>
+                                            <td><button data-act='del' data-index='${data.CarParts.length - 1}' type='button"  class='btn btn-primary btn-sm del'>&times;</button></td>
+                                    </tr>`);
+                    $("button[data-act='del']").addClass('btn btn-info btn-sm del')
+                })
+                $("#save").click(function (evt) {
+                    evt.preventDefault();
+                    evt.stopPropagation();
+                    if ($("#feq").valid()) {
+                        console.log('Ok');
+                        console.log(data);
+                        $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("CreatePost", "Parts")",
+                            dataType: "json",
+                            contentType: "application/json",
+                            data: JSON.stringify(data.CarParts),
+                        }).done(function (r) {
+                            console.log(r);
+                            if (r.success == true) {
+                                $("#alert").removeClass("alert-warning").addClass("alert-success").show();
+                                $("#msg-heading").html("Success");
+                                $("#msg").html(r.message);
+                                $("#feq").trigger("reset");
+                                $("#tbl").empty();
+                                $("#PartsName").val("");
+                                $("#Stock").val("");
+                                $("#Price").val("");
+                            }
+                            else {
+                                $("#alert").removeClass("alert-success").addClass("alert-warning").show();
+                                $("#msg-heading").html("Error");
+                                $("#msg").html(r.message);
+                            }
+
+                        }).fail(function (err) {
+                            console.log(err);
+                        });
+                    }
+                    else {
+                        console.log('Not Ok');
+
+                    }
+                });
+                $('body').on("click", "button.del", function (evt) {
+
+                    var b = $(this);
+                    var tr = b.closest('tr');
+                    var i = b.data("index");
+                    console.log(i);
+                    tr.remove();
+                    data.CarParts.splice(i, 1);
+                    console.log(data);
+                    $("#tbl").empty();
+                    for (var i = 0; i < data.CarParts.length; i++) {
+                        $("#tbl").append(`<tr>
+                                            <td>${i + 1}</td>
+                                            <td >${data.CarParts[i].PartsName}</td >
+                                            <td >${data.CarParts[i].Stock}</td >
+                                            <td >${data.CarParts[i].Price}</td >
+                                            <td><button data-act='del'  data-index='${i}' type="button" class='btn btn-primary btn-sm del'>&times;</button></td>
+                                    </tr>`);
+                    }
+                    $("button[data-act='del']").addClass('btn btn-info btn-sm del');
+
+                    evt.preventDefault();
+
+                })
+            });
+        </script>
+    </environment>
+}
+

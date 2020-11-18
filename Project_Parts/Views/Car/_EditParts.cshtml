@@ -1,0 +1,22 @@
+﻿@model CarParts
+
+
+<tr>
+    <td>
+        <input type="hidden" asp-for="CarPartsId" />
+
+        <textarea asp-for="PartsName" class="form-control form-control-sm"></textarea>
+        <span asp-validation-for="PartsName" class="text-danger"></span>
+    </td>
+    <td>
+        <textarea asp-for="Stock" class="form-control form-control-sm"></textarea>
+        <span asp-validation-for="Stock" class="text-danger"></span>
+    </td>
+    <td>
+        <textarea asp-for="Price" class="form-control form-control-sm" ></textarea>
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </td>
+    <td>
+        <button type="button" class="btn btn-danger btn-smn mt-2 del-parts"><span class="fa fa-trash"></span></button>
+    </td>
+</tr>

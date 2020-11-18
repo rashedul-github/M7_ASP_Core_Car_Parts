@@ -1,0 +1,27 @@
+﻿@model Car
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<form asp-action="Delete" asp-controller="Car">
+    <div asp-validation-summary="ModelOnly"></div>
+    <input type="hidden" asp-for="CarId" />
+    <div class="card">
+        <div class="card-header">
+            <h3>Are you sure to delete?</h3>
+        </div>
+        <div class="card-body">
+            <div class="card-text">
+                Car Id: @Model.CarId <br />
+                Car Model: @Model.CarModel <br />
+                Car Lunch Date: @Model.LunchDate.ToString("dd-MM-yyyy") <br />
+                Car Price: @Model.Price.ToString("0.00") <br />
+            </div>
+            <div class="card-link">
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                <a asp-action="Index" asp-controller="Car" class="btn btn-link btn-sm">Back to list</a>
+            </div>
+        </div>
+    </div>
+</form>
+

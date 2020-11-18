@@ -1,0 +1,70 @@
+﻿@model Car
+@{
+    ViewData["Title"] = "Create";
+}
+
+<form asp-action="Create">
+    <h1 class="alert alert-light text-center">Enter new car</h1>
+    <div asp-validation-summary="ModelOnly"></div>
+    <div class="form-group row">
+        <label asp-for="CarModel" class="col-form-label text-right col-2"></label>
+        <div class="col-4">
+            <input asp-for="CarModel" class="form-control form-control-sm" />
+            <span asp-validation-for="CarModel" class="text-danger"></span>
+        </div>
+        <label asp-for="Type" class="col-form-label text-right col-2"></label>
+        <div class="col-4">
+            <select asp-for="Type"
+                    asp-items="Html.GetEnumSelectList<CarType>()" class="form-control form-control-sm">
+                <option selected="selected" value="">Please select</option>
+            </select>
+            <span asp-validation-for="Type" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label asp-for="Price" class="col-form-label text-right col-2"></label>
+        <div class="col-4">
+            <input asp-for="Price" class="form-control form-control-sm" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+        <div class="col-6">
+            <input asp-for="IsAvailable" class="mt-2 offset-2 col-1" />&nbsp;&nbsp; <label asp-for="IsAvailable" class="col-form-label col-4"></label>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label asp-for="LunchDate" class="col-form-label text-right col-2"></label>
+        <div class="col-4">
+            <input type="text" asp-for="LunchDate" class="form-control form-control-sm" />
+            <span asp-validation-for="LunchDate" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-4 offset-2">
+            <input type="submit" value="Create" class="btn btn-sm btn-primary" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-4 offset-2">
+            <a asp-action="Index">Back to List</a>
+        </div>
+    </div>
+</form>
+@section styles{
+    <environment include="Development">
+        <link href="~/libs/gijgo/combined/css/gijgo.css" rel="stylesheet" />
+    </environment>
+}
+@section scripts{
+    <environment include="Development">
+        <script src="~/libs/validation/jquery.validate.js"></script>
+        <script src="~/libs/validation/jquery.validate.unobtrusive.js"></script>
+        <script src="~/libs/gijgo/combined/js/gijgo.js"></script>
+        <script>
+            $('#LunchDate').datepicker({
+                uiLibrary: 'bootstrap4',
+                format:"yyyy-mm-dd"
+            });
+        </script>
+    </environment>
+}
+
